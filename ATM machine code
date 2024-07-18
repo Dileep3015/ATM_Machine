@@ -1,0 +1,66 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+
+def check_pin(pin):
+    # Simulate PIN checking (in real use case, this would be against a database)
+    return pin == "1234"
+
+def check_balance():
+    messagebox.showinfo("Balance", f"Your current balance is ${balance}")
+
+def withdraw_money():
+    global balance
+    amount = simpledialog.askfloat("Withdraw Money", "Enter amount to withdraw:")
+    if amount is not None:  # Check if amount is None (user clicked Cancel)
+        if amount <= balance:
+            balance -= amount
+            messagebox.showinfo("Withdraw Money", f"Withdrawal successful. Remaining balance is ${balance}")
+        else:
+            messagebox.showerror("Error", "Insufficient balance.")
+    
+def deposit_money():
+    global balance
+    amount = simpledialog.askfloat("Deposit Money", "Enter amount to deposit:")
+    if amount is not None:  # Check if amount is None (user clicked Cancel)
+        balance += amount
+        messagebox.showinfo("Deposit Money", f"Deposit successful. Updated balance is ${balance}")
+
+def atm_interface():
+    def submit_pin():
+        pin_entered = pin_entry.get()
+        if check_pin(pin_entered):
+            pin_entry.delete(0, tk.END)
+            pin_frame.pack_forget()
+            main_frame.pack()
+        else:
+            messagebox.showerror("Error", "Invalid PIN. Please try again.")
+    
+    global balance
+    balance = 5000
+
+    root = tk.Tk()
+    root.title("Python Bank ATM")
+
+    # PIN entry frame
+    pin_frame = tk.Frame(root)
+    tk.Label(pin_frame, text="Enter your ATM PIN:").pack()
+    pin_entry = tk.Entry(pin_frame, show="*")
+    pin_entry.pack()
+    tk.Button(pin_frame, text="Submit", command=submit_pin).pack()
+    pin_frame.pack(pady=20)
+
+    # Main ATM operations frame
+    main_frame = tk.Frame(root)
+
+    tk.Label(main_frame, text=f"Welcome! Dileep", font=("Helvetica", 14)).pack(pady=10)
+    tk.Button(main_frame, text="Check Balance", command=check_balance).pack(pady=5)
+    tk.Button(main_frame, text="Withdraw Money", command=withdraw_money).pack(pady=5)
+    tk.Button(main_frame, text="Deposit Money", command=deposit_money).pack(pady=5)
+    tk.Button(main_frame, text="Exit", command=root.destroy).pack(pady=10)
+
+    main_frame.pack()
+
+    root.mainloop()
+
+if __name__ == "__main__":
+    atm_interface()
